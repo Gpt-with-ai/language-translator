@@ -5,6 +5,7 @@ transformers
 sentencepiece
 sacremoses
 groq
+nltk
 python-docx
 PyPDF2
 python-dotenv
