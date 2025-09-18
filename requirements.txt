@@ -10,3 +10,4 @@ python-docx
 PyPDF2
 python-dotenv
 sacrebleu
+rouge_scorer
