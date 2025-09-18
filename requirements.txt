@@ -1,0 +1,10 @@
+flask
+gunicorn
+torch --index-url https://download.pytorch.org/whl/cpu
+transformers
+sentencepiece
+sacremoses
+groq
+python-docx
+PyPDF2
+python-dotenv
