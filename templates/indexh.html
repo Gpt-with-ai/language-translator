@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live language translator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    min-height:100vh;color:#333;
+}
+.container{max-width:800px;margin:0 auto;padding:20px;}
+.header{text-align:center;color:white;margin-bottom:30px;}
+.header h1{font-size:2.5em;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
+.card{
+    background:white;border-radius:15px;padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+textarea{
+    width:100%;padding:15px;border:2px solid #e9ecef;
+    border-radius:8px;font-size:16px;resize:vertical;min-height:120px;
+    font-family:inherit;
+}
+textarea:focus{
+    outline:none;border-color:#667eea;
+    box-shadow:0 0 0 3px rgba(102,126,234,0.1);
+}
+#translatedOutput{
+    white-space:pre-wrap;border:2px solid #e9ecef;
+    padding:20px;min-height:120px;border-radius:8px;
+    background:#f8f9fa;font-family:inherit;line-height:1.5;
+    margin-top:20px;
+}
+.processing-indicator{
+    display:none;text-align:center;color:#667eea;
+    font-style:italic;margin:10px 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🤖 Live language translator</h1>
+  </div>
+
+  <div class="card">
+    <h3>🔄 Real-time Translation</h3>
+    <p style="margin:10px 0;"><strong>🎯 Target:</strong> English (Auto-detect source)</p>
+    <textarea id="inputText" placeholder="Type or paste text here..."></textarea>
+    <div class="processing-indicator" id="processing">🔄 Translating...</div>
+    <h4 style="margin-top:20px;">✅ Translation Result</h4>
+    <div id="translatedOutput">Start typing to see translation...</div>
+  </div>
+</div>
+
+<script>
+const inputBox=document.getElementById("inputText");
+const outputBox=document.getElementById("translatedOutput");
+const processing=document.getElementById("processing");
+let timeout=null;
+
+inputBox.addEventListener("input",()=>{
+  clearTimeout(timeout);
+  const text=inputBox.value.trim();
+  if(!text){
+    outputBox.innerText="Start typing to see translation...";
+    processing.style.display="none";
+    return;
+  }
+  processing.style.display="block";
+  outputBox.innerText="";
+  timeout=setTimeout(()=>{
+    fetch("/ajax_translate",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({text:text})
+    })
+    .then(r=>r.json())
+    .then(data=>{
+      processing.style.display="none";
+      if(data.translation){
+        outputBox.innerText = data.detected_lang
+          ? `[${data.detected_lang.toUpperCase()} → EN]\n${data.translation}`
+          : data.translation;
+      } else {
+        outputBox.innerText="[Translation unavailable]";
+      }
+    })
+    .catch(()=>{
+      processing.style.display="none";
+      outputBox.innerText="[Translation error - please try again]";
+    });
+  },800);
+});
+</script>
+</body>
+</html>
