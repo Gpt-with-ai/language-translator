@@ -1,13 +1,4 @@
 flask
 gunicorn
-torch --index-url https://download.pytorch.org/whl/cpu
-transformers
-sentencepiece
-sacremoses
 groq
-nltk
-python-docx
-PyPDF2
 python-dotenv
-sacrebleu
-rouge-score
