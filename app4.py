@@ -32,7 +32,11 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {"txt", "docx", "pdf"}
 
 # Groq client
-groq_client = Groq(api_key=os.getenv("GROQ_API_KEY", "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"))
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY environment variable is required")
+groq_client = Groq(api_key=GROQ_API_KEY)
 
 # Language codes (still kept for detection)
 LANGUAGE_CODES = {
@@ -306,3 +310,4 @@ def download_file(filename):
 if __name__ == "__main__":
     print("🚀 Starting Advanced AI Translator (Groq based)...")
     app.run(port="5080", debug=True)
+
