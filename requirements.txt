@@ -2,3 +2,4 @@ flask
 gunicorn
 groq
 python-dotenv
+langdetect
