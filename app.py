@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 from groq import Groq
 
+from langdetect import detect
 # Load environment
 load_dotenv()
 
@@ -18,20 +19,7 @@ groq_client = Groq(api_key=GROQ_API_KEY)
 def detect_language_with_groq(text: str) -> str:
     """Detect language and return 2-letter ISO code."""
     try:
-        sample_text = text[:300].strip()
-        resp = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[
-                {"role": "system",
-                 "content": "Respond ONLY with the 2-letter ISO 639-1 language code."},
-                {"role": "user", "content": sample_text}
-            ],
-            temperature=0.1,
-            max_tokens=5
-        )
-        code = resp.choices[0].message.content.strip().lower()
-        code = ''.join(c for c in code if c.isalpha())
-        return code if len(code) == 2 else "en"
+        return detect(text)
     except:
         return "en"
 
@@ -80,3 +68,4 @@ def ajax_translate():
 if __name__ == "__main__":
     print("🚀 Starting Live Translator...")
     app.run(port=5080, debug=True)
+
