@@ -3,3 +3,4 @@ gunicorn
 groq
 python-dotenv
 langdetect
+flask_cors
