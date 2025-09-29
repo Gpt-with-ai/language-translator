@@ -27,9 +27,30 @@ groq_client = Groq(api_key=GROQ_API_KEY)
 def detect_language_with_groq(text: str) -> str:
     """Detect language and return 2-letter ISO code."""
     try:
-        return detect(text)
+        sample_text = text[:300].strip()
+        response = groq_client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """Respond with ONLY the 2-letter ISO 639-1 code of the text language."""
+                },
+                {"role": "user", "content": sample_text}
+            ],
+            temperature=0,
+            max_tokens=10
+        )
+        detected = response.choices[0].message.content.strip().lower()
+        lang_code = ''.join(c for c in detected if c.isalpha())
+        if len(lang_code) == 2:
+            return lang_code
+        return "en"
     except:
         return "en"
+    # try:
+    #     return detect(text)
+    # except:
+    #     return "en"
 
 def translate_with_groq(text: str, src_lang: str, tgt_lang: str = "en") -> str:
     """Translate text to English using Groq."""
@@ -80,6 +101,7 @@ def ajax_translate():
 if __name__ == "__main__":
     print("🚀 Starting Live Translator...")
     app.run(port=5080, debug=True)
+
 
 
 
