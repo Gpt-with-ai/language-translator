@@ -7,7 +7,8 @@ from flask import Flask
 from flask_cors import CORS
  
 app = Flask(__name__)
-CORS(app, origins=["https://hub.decipherinc.com"])
+CORS(app, origins=["https://hub.decipherinc.com"], supports_credentials=True)
+
  
 
 from langdetect import detect
@@ -79,5 +80,6 @@ def ajax_translate():
 if __name__ == "__main__":
     print("🚀 Starting Live Translator...")
     app.run(port=5080, debug=True)
+
 
 
