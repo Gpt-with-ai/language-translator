@@ -3,11 +3,18 @@ from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 from groq import Groq
 
+from flask import Flask
+from flask_cors import CORS
+ 
+app = Flask(__name__)
+CORS(app, origins=["https://hub.decipherinc.com"])
+ 
+
 from langdetect import detect
 # Load environment
 load_dotenv()
 
-app = Flask(__name__)
+# app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 # Groq client
@@ -45,6 +52,10 @@ def translate_with_groq(text: str, src_lang: str, tgt_lang: str = "en") -> str:
 @app.route("/")
 def home():
     return render_template("indexh.html")
+@app.route("/detect-language", methods=["POST", "OPTIONS"])
+def detect():
+    return {"message": "CORS working!"}
+
 
 @app.route("/ajax_translate", methods=["POST"])
 def ajax_translate():
@@ -68,4 +79,5 @@ def ajax_translate():
 if __name__ == "__main__":
     print("🚀 Starting Live Translator...")
     app.run(port=5080, debug=True)
+
 
