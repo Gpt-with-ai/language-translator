@@ -6,182 +6,186 @@
   <title>Live Language Translator</title>
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    html, body {
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #4a1d6b 100%);
-      color: #333;
-    }
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #4a1d6b 100%);
+  color: #333;
+  overflow-x: hidden;
+}
 
-    /* Header */
-    .header {
-      position: relative;
-      height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+/* Header */
+.header {
+  position: relative;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
 
-    .logo {
-      position: absolute;
-      background-color: white;
-        padding: 10px;   
-        border-radius: 8px;
-      left: 30px;
-      height: 60px;
-    }
+.logo {
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  left: 30px;
+  height: 60px;
+}
 
-    .header h1 {
-      font-size: 3.5em;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
+.header h1 {
+  font-size: clamp(2em, 4vw, 3.5em); /* ✅ scales with zoom/screen */
+  color: white;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-    /* Page Layout */
-    .main-layout {
-      display: flex;
-      align-items: flex;
-      height: calc(100vh - 150px);
-       padding: 15px ;
-    }
+/* Page Layout */
+.main-layout {
+  display: flex;
+  flex-wrap: wrap;        /* ✅ allows wrapping on zoom */
+  justify-content: space-between;
+  gap: 15px;
+  height: auto;
+  padding: 15px;
+}
 
-    /* .sidebar {
-      width: 20%;
-      background: rgba(255, 255, 255, 0.1);
-    padding: 25px 20px;
-      border-radius: 15px;
-      color: white ;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(5px);
+/* Sidebar (Supported Languages) */
+.sidebar {
+  flex: 1 1 250px;        /* ✅ flexible, min width */
+  max-width: 20%;
+  min-width: 250px;
+  padding: 25px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    } */
+/* History */
+.history {
+  flex: 1 1 250px;        /* ✅ flexible */
+  max-width: 20%;
+  min-width: 250px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px 25px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 65px;
+}
 
-    .sidebar {
-    width: 20%;
-    padding: 25px 20px;
-    background: rgba(255, 255, 255, 0.1);  /* translucent background */
-    color: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* soft shadow */
-    backdrop-filter: blur(15px);            /* increased blur for glass effect */
-    -webkit-backdrop-filter: blur(15px);    /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border to enhance glass feel */
-    display: flex;
+/* Main Content */
+.main-content {
+  flex: 2 1 500px;        /* ✅ more space */
+  max-width: 60%;
+  min-width: 350px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  min-height: 400px;
+}
+
+/* Textarea */
+textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  min-height: 200px;
+  font-family: inherit;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Translation Output */
+#translatedOutput {
+  white-space: pre-wrap;
+  border: 2px solid #e9ecef;
+  padding: 25px;
+  min-height: 210px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  font-family: inherit;
+  line-height: 1.5;
+  margin-top: 20px;
+}
+
+/* Processing Indicator */
+.processing-indicator {
+  display: none;
+  text-align: center;
+  color: #667eea;
+  font-style: italic;
+  margin: 10px 0;
+}
+
+/* History List */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  padding: 5px 0;
+}
+
+.history-list {
+  font-size: 0.9em;
+  color: #f1f1f1;
+}
+
+.history-list li {
+  margin-bottom: 8px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  padding-bottom: 4px;
+}
+
+/* Responsive for smaller screens & zoom */
+@media (max-width: 1200px) {
+  .main-layout {
     flex-direction: column;
-    justify-content: center;
-    }
-
-    .history {
-      width: 20%;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 20px 25px;
-      border-radius: 15px;
-      color: white;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(15px);            /* increased blur for glass effect */
-      -webkit-backdrop-filter: blur(15px);    /* Safari support */
-      border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border to enhance glass feel */
-      display: flex;
-      flex-direction: column;
-      justify-content: top;
-      padding-top: 65px;
-
-    }
-
-
-    .main-content {
-      width: 65%;
-      padding-left: 15px;
-      padding-right: 15px;
-      /* padding: 20px; */
-      display: flex;
-      justify-content: center;
-      /* align-items: center; */
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      width: 100%;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 15px;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      font-size: 16px;
-      resize: vertical;
-      min-height: 200px;
-      font-family: inherit;
-    }
-
-    textarea:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    #translatedOutput {
-      white-space: pre-wrap;
-      border: 2px solid #e9ecef;
-      padding: 25px;
-      min-height: 210px;
-      border-radius: 8px;
-      background: #f8f9fa;
-      font-family: inherit;
-      line-height: 1.5;
-      margin-top: 20px;
-    }
-
-    .processing-indicator {
-      display: none;
-      text-align: center;
-      color: #667eea;
-      font-style: italic;
-      margin: 10px 0;
-    }
-
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    li {
-      padding: 5px 0;
-    }
-
-    .history-list {
-      font-size: 0.9em;
-      color: #f1f1f1;
-    }
-
-    .history-list li {
-      margin-bottom: 8px;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-      padding-bottom: 4px;
-    }
-
-    @media (max-width: 1000px) {
-      .main-layout {
-        flex-direction: column;
-        height: auto;
-      }
-      .sidebar, .main-content, .history {
-        width: 100%;
-        margin-bottom: 20px;
-      }
-    }
+    align-items: stretch;
+  }
+  .sidebar, .main-content, .history {
+    max-width: 100%;
+    min-width: 100%;
+  }
+  .history {
+    padding-top: 20px;
+  }
+}
   </style>
 </head>
 <body>
@@ -299,5 +303,6 @@
 
 </body>
 </html>
+
 
 
