@@ -1,99 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live language translator</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    min-height:100vh;color:#333;
-}
-.container{max-width:800px;margin:0 auto;padding:20px;}
-.header{text-align:center;color:white;margin-bottom:30px;}
-.header h1{font-size:2.5em;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
-.card{
-    background:white;border-radius:15px;padding:30px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-}
-textarea{
-    width:100%;padding:15px;border:2px solid #e9ecef;
-    border-radius:8px;font-size:16px;resize:vertical;min-height:120px;
-    font-family:inherit;
-}
-textarea:focus{
-    outline:none;border-color:#667eea;
-    box-shadow:0 0 0 3px rgba(102,126,234,0.1);
-}
-#translatedOutput{
-    white-space:pre-wrap;border:2px solid #e9ecef;
-    padding:20px;min-height:120px;border-radius:8px;
-    background:#f8f9fa;font-family:inherit;line-height:1.5;
-    margin-top:20px;
-}
-.processing-indicator{
-    display:none;text-align:center;color:#667eea;
-    font-style:italic;margin:10px 0;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Language Translator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #4a1d6b 100%);
+      color: #333;
+    }
+
+    /* Header */
+    .header {
+      position: relative;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      position: absolute;
+      background-color: white;
+        padding: 10px;   
+        border-radius: 8px;
+      left: 30px;
+      height: 60px;
+    }
+
+    .header h1 {
+      font-size: 3.5em;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Page Layout */
+    .main-layout {
+      display: flex;
+      align-items: flex;
+      height: calc(100vh - 150px);
+       padding: 15px ;
+    }
+
+    /* .sidebar {
+      width: 20%;
+      background: rgba(255, 255, 255, 0.1);
+    padding: 25px 20px;
+      border-radius: 15px;
+      color: white ;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(5px);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    } */
+
+    .sidebar {
+    width: 20%;
+    padding: 25px 20px;
+    background: rgba(255, 255, 255, 0.1);  /* translucent background */
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* soft shadow */
+    backdrop-filter: blur(15px);            /* increased blur for glass effect */
+    -webkit-backdrop-filter: blur(15px);    /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border to enhance glass feel */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    }
+
+    .history {
+      width: 20%;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px 25px;
+      border-radius: 15px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);            /* increased blur for glass effect */
+      -webkit-backdrop-filter: blur(15px);    /* Safari support */
+      border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border to enhance glass feel */
+      display: flex;
+      flex-direction: column;
+      justify-content: top;
+      padding-top: 65px;
+
+    }
+
+
+    .main-content {
+      width: 65%;
+      padding-left: 15px;
+      padding-right: 15px;
+      /* padding: 20px; */
+      display: flex;
+      justify-content: center;
+      /* align-items: center; */
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      resize: vertical;
+      min-height: 200px;
+      font-family: inherit;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    #translatedOutput {
+      white-space: pre-wrap;
+      border: 2px solid #e9ecef;
+      padding: 25px;
+      min-height: 210px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      font-family: inherit;
+      line-height: 1.5;
+      margin-top: 20px;
+    }
+
+    .processing-indicator {
+      display: none;
+      text-align: center;
+      color: #667eea;
+      font-style: italic;
+      margin: 10px 0;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      padding: 5px 0;
+    }
+
+    .history-list {
+      font-size: 0.9em;
+      color: #f1f1f1;
+    }
+
+    .history-list li {
+      margin-bottom: 8px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+      padding-bottom: 4px;
+    }
+
+    @media (max-width: 1000px) {
+      .main-layout {
+        flex-direction: column;
+        height: auto;
+      }
+      .sidebar, .main-content, .history {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+
+  <!-- Header -->
   <div class="header">
-    <h1>🤖 Live language translator</h1>
+    <img src="bannerlogo 1.png" alt="Company Logo" class="logo" />
+    <h1> Live Language Translator</h1>
   </div>
 
-  <div class="card">
-    <h3>🔄 Real-time Translation</h3>
-    <p style="margin:10px 0;"><strong>🎯 Target:</strong> English (Auto-detect source)</p>
-    <textarea id="inputText" placeholder="Type or paste text here..."></textarea>
-    <div class="processing-indicator" id="processing">🔄 Translating...</div>
-    <h4 style="margin-top:20px;">✅ Translation Result</h4>
-    <div id="translatedOutput">Start typing to see translation...</div>
+  <!-- Main Layout -->
+  <div class="main-layout">
+
+    <!-- Supported Languages Sidebar -->
+    <div class="sidebar">
+      <h3>🌐 Supported Languages</h3>
+      <ul>
+        <li>🇫🇷 French</li>
+        <li>🇪🇸 Spanish</li>
+        <li>🇩🇪 German</li>
+        <li>🇮🇹 Italian</li>
+        <li>🇨🇳 Chinese</li>
+        <li>🇯🇵 Japanese</li>
+        <li>🇷🇺 Russian</li>
+        <li>🇮🇳 Hindi</li>
+        <li>🇰🇷 Korean</li>
+      </ul>
+    </div>
+
+    <!-- Center Translator Box -->
+    <div class="main-content">
+      <div class="card">
+        <h2>🔄 Real-time Translation</h2>
+        <p style="margin:10px 0;"><strong>🎯 Target:</strong> English (Auto-detect source)</p>
+        <textarea id="inputText" placeholder="Type or paste text here..."></textarea>
+        <div class="processing-indicator" id="processing">🔄 Translating...</div>
+        <h2 style="margin-top:25px;">✅ Translation Result</h2>
+        <div id="translatedOutput">Start typing to see translation...</div>
+      </div>
+    </div>
+
+    <!-- Translation History -->
+    <div class="history">
+      <h3 >🕘 Recent History</h3>
+      <ul class="history-list" id="historyList">
+        <li>No history yet.</li>
+      </ul>
+    </div>
   </div>
-</div>
 
-<script>
-const inputBox=document.getElementById("inputText");
-const outputBox=document.getElementById("translatedOutput");
-const processing=document.getElementById("processing");
-let timeout=null;
+  <!-- JS Logic -->
+  <script>
+    const inputBox = document.getElementById("inputText");
+    const outputBox = document.getElementById("translatedOutput");
+    const processing = document.getElementById("processing");
+    const historyList = document.getElementById("historyList");
+    let timeout = null;
 
-inputBox.addEventListener("input",()=>{
-  clearTimeout(timeout);
-  const text=inputBox.value.trim();
-  if(!text){
-    outputBox.innerText="Start typing to see translation...";
-    processing.style.display="none";
-    return;
-  }
-  processing.style.display="block";
-  outputBox.innerText="";
-  timeout=setTimeout(()=>{
-    fetch("/ajax_translate",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({text:text})
-    })
-    .then(r=>r.json())
-    .then(data=>{
-      processing.style.display="none";
-      if(data.translation){
-        outputBox.innerText = data.detected_lang
-          ? `[${data.detected_lang.toUpperCase()} → EN]\n${data.translation}`
-          : data.translation;
-      } else {
-        outputBox.innerText="[Translation unavailable]";
+    function addToHistory(original, translated, lang) {
+      const entry = document.createElement("li");
+      entry.innerText = `[${lang.toUpperCase()} → EN] ${original.slice(0, 30)}... → ${translated.slice(0, 30)}...`;
+      if (historyList.children[0]?.innerText === "No history yet.") {
+        historyList.innerHTML = "";
       }
-    })
-    .catch(()=>{
-      processing.style.display="none";
-      outputBox.innerText="[Translation error - please try again]";
+      historyList.prepend(entry);
+      if (historyList.children.length > 10) {
+        historyList.removeChild(historyList.lastChild);
+      }
+    }
+
+    inputBox.addEventListener("input", () => {
+      clearTimeout(timeout);
+      const text = inputBox.value.trim();
+      if (!text) {
+        outputBox.innerText = "Start typing to see translation...";
+        processing.style.display = "none";
+        return;
+      }
+      processing.style.display = "block";
+      outputBox.innerText = "";
+      timeout = setTimeout(() => {
+        fetch("/ajax_translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text })
+        })
+        .then(r => r.json())
+        .then(data => {
+          processing.style.display = "none";
+          if (data.translation) {
+            const langLabel = data.detected_lang
+              ? `[${data.detected_lang.toUpperCase()} → EN]`
+              : "";
+            outputBox.innerText = `${langLabel}\n${data.translation}`;
+            addToHistory(text, data.translation, data.detected_lang || "??");
+          } else {
+            outputBox.innerText = "[Translation unavailable]";
+          }
+        })
+        .catch(() => {
+          processing.style.display = "none";
+          outputBox.innerText = "[Translation error - please try again]";
+        });
+      }, 800);
     });
-  },800);
-});
-</script>
+  </script>
+
 </body>
 </html>
